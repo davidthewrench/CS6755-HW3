@@ -1,11 +1,6 @@
-/*import com.getflourish.stt.*;
-import com.google.gson.annotations.*;
-import com.google.gson.*;
-import com.google.gson.internal.*;
-import com.google.gson.reflect.*;
-import com.google.gson.stream.*;
-import javaFlacEncoder.*;
-import ddf.minim.*;
+//https://davidthewrench.github.io/Audio_recording/
+
+import processing.sound.*;
 
 import de.fhpotsdam.unfolding.*;
 import de.fhpotsdam.unfolding.core.*;
@@ -22,64 +17,144 @@ import de.fhpotsdam.unfolding.tiles.*;
 import de.fhpotsdam.unfolding.ui.*;
 import de.fhpotsdam.unfolding.utils.*;
 import de.fhpotsdam.utils.*;
-*/
-
-
-//todo 
-//find a good library for pseech to text
-//https://forum.processing.org/two/discussion/158/#Comment_372
-//and
-//the google api seem like the best bets
-
-//todo setup the unfolding maps to display maps stuff (already imported)
-/*
-STT stt;
-
-String def = "didn't catch that.";
-
-void setup()
-{
-  size(800, 800);
-  stt = new STT(this, false);
-  stt.enableDebug();
-  stt.setLanguage("en");
-  stt.enableAutoRecord();
-  
-  textFont(createFont("Arial", 24));
-}
-
-void draw()
-{
-  background(0);
-  text(def, mouseX, mouseY);
-  
-}
-
-void transcribe(String phrase, float confidence)
-{
-   println(phrase);
-   def = phrase;
-  
-}*/
-
-
-/*
-  Simple WebSocketServer example that can receive voice transcripts from Chrome
-  Requires WebSockets Library: https://github.com/alexandrainst/processing_websockets
- */
 
 import websockets.*;
 
 WebsocketServer socket;
 
+String phrase = "";
+
+UnfoldingMap map;
+
+ArrayList<geoLocate> locations = new ArrayList<geoLocate>();
+ArrayList<SoundFile> sounds = new ArrayList<SoundFile>();
+
+boolean stopFlag = false;
+
 void setup() {
   socket = new WebsocketServer(this, 1337, "/p5websocket");
+  
+  
+  size(1200, 900, P2D);
+  map = new UnfoldingMap(this);
+  
+  MapUtils.createDefaultEventDispatcher(this, map);
+  
+  locations.add(new geoLocate("Florida", 27.6648, -81.5158));
+  //locations.add(new geoLocate("England", 100, 3));
+  //locations.add(new geoLocate("New Zealand", 50, 3));
+  //locations.add(new geoLocate("Italy", 7, 3));
+ 
+  
+  sounds.add(new SoundFile(this, "6 - Ambience - Sea on Shingle.wav"));
+  
+  textFont(createFont("Arial", 24));
+  
 }
 
 void draw() {
   background(0);
+  for(int i = 0; i < locations.size(); i++)
+  {
+    if(phrase.contains("stop"))
+    {
+      stopFlag = true;
+    }
+    geoLocate temp = locations.get(i);
+    map.addMarker(temp.getMark());
+    
+    if(phrase.contains(temp.getName()))
+    {
+       temp.select();
+    }
+    
+    if(temp.isSelected() == true)
+    {
+       temp.increase();
+       if(sounds.get(i).isPlaying() == 0)
+         sounds.get(i).play();
+    }
+    else
+    {
+      if(sounds.get(i).isPlaying() == 1)
+         sounds.get(i).stop();
+    } 
+  }
+  if(stopFlag == true)
+  {
+    for(int i = 0; i < locations.size(); i++)
+    {
+      locations.get(i).deselect();
+    }
+    stopFlag = false; 
+  }
+  
+  map.draw();
 }
 
 void webSocketServerEvent(String msg){
  println(msg);
+ phrase = msg;
+}
+
+class geoLocate extends Location
+{
+   String name;
+   boolean isSelected = false;
+   int time = 0;
+   int max = 1000;
+   
+   SimplePointMarker m;
+   
+   geoLocate()
+   {
+     super(0, 0);
+   }
+   geoLocate(String temp, float a, float b)
+   {
+     super(a, b);
+     name = temp;
+     m = new SimplePointMarker(this);
+     m.setHidden(true);
+   }
+   
+   String getName()
+   {
+     return name;
+   }
+   
+   boolean isSelected()
+   {
+      return isSelected; 
+   }
+   
+   SimplePointMarker getMark()
+   {
+      return m; 
+   }
+   
+   void increase()
+   {
+      if(isSelected == true)
+        time++;
+      if(time > max)
+      {
+        this.deselect();
+      }
+   }
+   
+   void select()
+   {
+      if(isSelected == true)
+        time = 0;
+      
+      m.setHidden(false);  
+      isSelected = true; 
+   }
+   void deselect()
+   {
+      time = 0;
+      m.setHidden(true);
+      isSelected = false;
+   }
 }
