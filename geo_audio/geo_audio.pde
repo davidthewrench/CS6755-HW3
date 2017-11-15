@@ -41,12 +41,15 @@ void setup() {
   MapUtils.createDefaultEventDispatcher(this, map);
   
   locations.add(new geoLocate("Florida", 27.6648, -81.5158));
-  //locations.add(new geoLocate("England", 100, 3));
-  //locations.add(new geoLocate("New Zealand", 50, 3));
+  locations.add(new geoLocate("Texas", 100, 3));
+  locations.add(new geoLocate("Tokyo", 50, 3));
   //locations.add(new geoLocate("Italy", 7, 3));
  
   
   sounds.add(new SoundFile(this, "6 - Ambience - Sea on Shingle.wav"));
+  sounds.add(new SoundFile(this, "19 - Foley - Horse gallop on dirt constantly then stop"));
+  sounds.add(new SoundFile(this, "9 - Ambience - Traffic- busy and steady.wav"));
+  //sounds.add(new SoundFile(this, "6 - Ambience - Sea on Shingle.wav"));
   
   textFont(createFont("Arial", 24));
   
