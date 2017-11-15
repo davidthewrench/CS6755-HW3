@@ -1,3 +1,12 @@
+/*import com.getflourish.stt.*;
+import com.google.gson.annotations.*;
+import com.google.gson.*;
+import com.google.gson.internal.*;
+import com.google.gson.reflect.*;
+import com.google.gson.stream.*;
+import javaFlacEncoder.*;
+import ddf.minim.*;
+
 import de.fhpotsdam.unfolding.*;
 import de.fhpotsdam.unfolding.core.*;
 import de.fhpotsdam.unfolding.data.*;
@@ -13,6 +22,8 @@ import de.fhpotsdam.unfolding.tiles.*;
 import de.fhpotsdam.unfolding.ui.*;
 import de.fhpotsdam.unfolding.utils.*;
 import de.fhpotsdam.utils.*;
+*/
+
 
 //todo 
 //find a good library for pseech to text
@@ -21,17 +32,54 @@ import de.fhpotsdam.utils.*;
 //the google api seem like the best bets
 
 //todo setup the unfolding maps to display maps stuff (already imported)
+/*
+STT stt;
+
+String def = "didn't catch that.";
 
 void setup()
 {
+  size(800, 800);
+  stt = new STT(this, false);
+  stt.enableDebug();
+  stt.setLanguage("en");
+  stt.enableAutoRecord();
   
-  
-  
+  textFont(createFont("Arial", 24));
 }
 
 void draw()
 {
+  background(0);
+  text(def, mouseX, mouseY);
   
+}
+
+void transcribe(String phrase, float confidence)
+{
+   println(phrase);
+   def = phrase;
   
-  
+}*/
+
+
+/*
+  Simple WebSocketServer example that can receive voice transcripts from Chrome
+  Requires WebSockets Library: https://github.com/alexandrainst/processing_websockets
+ */
+
+import websockets.*;
+
+WebsocketServer socket;
+
+void setup() {
+  socket = new WebsocketServer(this, 1337, "/p5websocket");
+}
+
+void draw() {
+  background(0);
+}
+
+void webSocketServerEvent(String msg){
+ println(msg);
 }
