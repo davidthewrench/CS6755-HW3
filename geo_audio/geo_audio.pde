@@ -42,7 +42,7 @@ void setup() {
   
   locations.add(new geoLocate("Florida", 27.6648, -81.5158));
   locations.add(new geoLocate("Texas", 31.9686, -99.9018));
-  locations.add(new geoLocate("Tokyo", 35.6895, 139.6917));
+  locations.add(new geoLocate("New York", 35.6895, 139.6917));
   //locations.add(new geoLocate("Italy", 7, 3));
  
   
